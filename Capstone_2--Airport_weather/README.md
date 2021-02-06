@@ -2,9 +2,13 @@
 
 ## Introduction
 
-This project seeks to form a causal relationship of weather events on the frequency of commercial airline flight delays and cancellations. Flight data was compiled from the Bureau of Transportation Statistics website; weather events were taken from a Kaggle webpage (URL below) based on the paper "Short and Long-term Pattern Discovery Over Large-Scale Geo-Spatiotemporal Data" by Moosavi, et al. All flights in 2016-2019 from the busiest 24 airports in 2018, and the weather events in those cities, were selected.
+"Your flight has been cancelled." These may be the five most hated words for an airline passenger. They disrupt travel plans, cost everyone time and money, and can hurt an airline's reputation. However, in some cases an airline has no choice but to cancel a flight, or to delay one. If we could create an algorithm that would allow an airline to discover that they need to delay or cancel a flight a long time in advance, they could buy time for the customer to change their travel plans, perhaps with the help of that airline.
 
-## Data Fields
+This project seeks to form a causal relationship of weather events on the likelihood of commercial airline flight delays and cancellations. Flight data was compiled from the Bureau of Transportation Statistics website; weather events were taken from a Kaggle webpage (URL below) based on the paper "Short and Long-term Pattern Discovery Over Large-Scale Geo-Spatiotemporal Data" by Moosavi, et al. All flights in 2016-2019 from four airports in 2018, and the weather events in those cities, were selected.
+
+## Data
+
+### Data Fields
 
 The data required extensive preprocessing before analysis; details can be found in the Exploratory Data Analysis (EDA) writeup. Processed data can be found in the `departure_events.csv` file. The origin city and departure date uniquely identify each record. All other fields represent the daily summary of each airport. `departure_events.csv` has the following columns:
 
@@ -20,7 +24,7 @@ The data required extensive preprocessing before analysis; details can be found 
 * Hail: Presence of hail (0 or 1)
 * Wind: Wind over 40 mph (0 or 1)
 * Rain: Presence of rain (0, 1=Light, 2=Medium, 3=Heavy)
-* Sleet: Presence of sleet (0 or 1). Note: The paper did not distinguish between hail and sleet; this had to be done manually. Details are given in the EDA writeup.
+* Sleet: Presence of sleet (0 or 1). Note: The paper did not distinguish between hail and sleet; this had to be done manually. Details are given below.
 * Snow: Presence of snow (0, 1=Light, 2=Medium, 3=Heavy)
 * FracCancelled: Fraction of the departing flights cancelled due to weather
 * FracDelayed: Fraction of the departing flights delayed due to weather
@@ -30,17 +34,13 @@ The data required extensive preprocessing before analysis; details can be found 
 
 Several of these columns will be removed during this step of the process.
 
-## Sources
+### Sources
 
 [Weather data](https://www.kaggle.com/sobhanmoosavi/us-weather-events)
 
 [Flight data (URL subject to change)](https://www.transtats.bts.gov/Tables.asp?DB_ID=120&DB_Name=Airline%20On-Time%20Performance%20Data&DB_Short_Name=On-Time)
 
-## Data
-
-### Weather data
-
-#### Data Analysis Strategy
+### Airport Selection Strategy
 
 To analyze the flights, we need to select our airports. Flights can be affected
 by issues at either the departure airport or the arrival airport.
@@ -91,7 +91,13 @@ that realigned many of its runways.
 (4) Miami: Another American hub, Miami enjoys warm weather year-round, but
 summertime storms are common. It is a gateway to South America.
 
-### Flight data
+### Data Wrangling
+
+The flight data was provided in an easily-accessible data format from the Bureau of Transportation Statistics, only needing modification of flight arrival and departure times into their local time zones. The weather data, however, came in the form of "codes" that did not seem to match well to actual weather events. Worse, the light/medium/heavy codes for snow and rain did not overlap in a natural "stairstep" form; for instance, it was common for a "light" snow to end after a concurrent "medium" snow began. Resolving these inconsistencies was a significant part of the data wrangling. Once this was done, the weather and flight data could be merged.
+
+The next step was to merge the weather and flight data. It was necessary to recognize that flights could be affected by weather events just before or after the scheduled departure or arrival time, particularly when it came to snow. Thus a flight was assumed to be affected by weather if it was within a certain amount of time of a weather event, more for snow, especially heavy snow, as it can take hours to recover after a major snowstorm. Finding the right length of these times is beyond the scope of this project.
+
+This association between flights and weather events was made both for departures and cities, and arrival times and cities.
 
 ## Exploratory Data Analysis
 
