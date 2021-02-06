@@ -101,6 +101,8 @@ This association between flights and weather events was made both for departures
 
 ## Exploratory Data Analysis
 
+After this union of weather and flight data, we examine the combined data and look for any trends that may guide us towards analysis strategies.
+
 ![](./figures/MonthlyDelaysCancelsByAirport.png)
 
 Contrary to what we would expect, there are some significant differences between departure and arrival delays and cancellations. Miami has many more departure delays than arrival delays in the summer, and a lesser but reversed effect is true at JFK. Miami is known for having frequent thunderstorms during the summer; perhaps they affect the departure process more than the arrival process. Also notice that there is a large cancellation spike for Miami in September. This was likely caused by Hurricane Irma in September 2017, which shut down Miami International Airport. Because our weather does not account for actual hurricanes, if we left these cancelled flights in, the model would associate the heavy rain and wind with a lot of cancellations here. Therefore, we should remove them.
@@ -142,6 +144,10 @@ Also notice the decrease in delays from snow code values of 2 to 3. This is prob
 The departure-arrival split is similar for the rain for both the delays and cancellations. This time, the rise in arrival delays is steady all the way through a rain code value of 3. Perhaps airports can still accept arriving airplanes during heavy rain as long as there is no severe weather, which would force a ground stop.
 
 We need to consider how many of our flights actually have each of these codes. Since the flights seem much more vulnerable to delays on the departure end, we will focus on arrival codes.
+
+### Key Takeaways
+
+Snow and rain have the strongest effects on flights. In particular, snow can cause delays on the departure end and cancellations on both ends of the flight, and rain can delay flights on the departure end. In all cases, these effects are more pronounced with more intense weather. We should focus on these effects as we attempt to train the data and need to start trimming explanatory variables to simplify the training process.
 
 ## Training
 
