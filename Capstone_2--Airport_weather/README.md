@@ -151,7 +151,25 @@ Snow and rain have the strongest effects on flights. In particular, snow can cau
 
 ## Training
 
-### Models
+We attempt to fit the data using three learning methods: Logistic regressions, random forests, support vector classifiers. We will use 5-fold cross validation, and we will attempt a parameter sweep to determing the best fit. Because the overwhelming majority of observations are negatives, we need a balanced weighting of observations with the cross-validation: Half negatives, half positives.
+
+The goal is to use the values of the weather codes to predict whether a flight will be cancelled or not, and whether it will be delayed or not. These will be treated as two separate problems for the purposes of training. We look for the classifier and parameter set that gives us the best mean test score.
+
+### Logistic Regressions
+
+Scenarios with binary outcomes such as ours tend to be prime candidates for modeling with a logistic regression, so we try this first. An advantage of logistic regressions is that the output of the classifier is not a binary decision but a likelihood which can set after the training is done. This makes them a prime candidate as a classifieer. We do a parameter sweep of C from 10^(-2) to 10^(3), separated logarithmically. The parameter turns out to make little difference, but C=1 gets us slightly better results. The mean test score is 0.780 for cancellations and 0.831 for delays.
+
+### Random Forests
+
+Decisions trees are easy to create but tend to overfit the data. To overcome this, we can use a random forest, which takes a random sample of trees built on bootstrapped data. Input parameters are the number of trees and the maximum depth of each tree. After some parameter sweeping, we settle on a 50-tree forest with up to three splits per tree for both cancellations and delays. The mean test score is 0.767 for cancellations and 0.829 for delays.
+
+### Support Vector Classifiers
+
+The SVC is slow to train with a large amount of data, so we resampled the data as we narrowed down the ideal parameters. In particular, since most results were negative, only the negatives were resampled, and all positives were retained. When resampling over every five negative data points and all positive points, we get a mean test score of 0.754 for cancellations and 0.801 for delays.
+
+### Model Selection
+
+Ideally we would like a classifier that is quick to train, minimizes the risk of false negatives and positives, and is adaptable post-training. With our data, the logistic regression fits the bill in all three cases. We can train the data then set the threshold to see what will give us the best results. 
 
 ## Analysis
 
@@ -226,7 +244,7 @@ Next we need to assign a value to each. We assume for simplicity that a false
 positive will induce the same problem that we attempted to avoid: A false
 positive delay will cause a flight delay, and a false positive cancellation
 will cause the flight to be cancelled. We do not have cost figures available
-to know the relative costs of each, but we can still build the model with
+to know the relative costs of each; acquiring that data , but we can still build the model with
 the ability to tune this ratio. Let C = cost. We assume that for delays,
 C(FOR) = 100 times C(FPR) for cancellations and 25 times C(FOR) for delays.
 
