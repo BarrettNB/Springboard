@@ -151,14 +151,24 @@ Snow and rain have the strongest effects on flights. In particular, snow can cau
 
 ## Training
 
+### Models
+
+## Analysis
+
 ### ROC Curves
+
+The true positive rate (TPR), also called the sensitivity, is defined as probability of predicting a positive given an actual positive; the false positive rate (FPR) is the probability of predicting a positive given an actual negative. Clearly we want to maximize the TPR and minimize the FPR. However, these are competing goals. Lowering the the logistic regression's threshold of acceptance will increase the likelihood that we will make a positive prediction regardless of the actual, which will increase the TPR but also the FPR. Likewise, we cannot lower the FPR by increasing the threshold without dragging down the TPR.
+
+One tool we can use to help us find the optimal threshold is to simply plot the TPR and FPR as a function of the threshold. We do that now for the cancellations and delays.
 
 ![](./figures/ROC_cancels.png)
 
 ![](./figures/ROC_delays.png)
 
-### FPR vs. FNR
-We should discuss what false positives and false negatives mean in the context
+Most of the dots for both the cancellations and delays have a very low FPR but also a low TPR. This is likely due to the overwhelming majority of flights not being delayed nor cancelled, so there are not many positives to sample in either case. Also, since we want to maximize the TPR but minimize the FPR, we should switch the measures to two that we want to both minimize or both maximize. For reasons we will discuss later, we will switch from attempting to maximize the TPR to minimizing the False Negative Rate, which is simply 1 minus the TPR.
+
+### Delays and Cancellations
+Before proceeding, we should discuss what false positives and false negatives mean in the context
 of our model, which is used to predict whether a flight will be cancelled or
 delayed, not whether to make the decision to delay or cancel a flight. Ideally
 the decision would be an internal one to make preparations for an upcoming
