@@ -157,7 +157,7 @@ The goal is to use the values of the weather codes to predict whether a flight w
 
 ### Logistic Regressions
 
-Scenarios with binary outcomes such as ours tend to be prime candidates for modeling with a logistic regression, so we try this first. An advantage of logistic regressions is that the output of the classifier is not a binary decision but a likelihood which can set after the training is done. This makes them a prime candidate as a classifieer. We do a parameter sweep of C from 10^(-2) to 10^(3), separated logarithmically. The parameter turns out to make little difference, but C=1 gets us slightly better results. The mean test score is 0.780 for cancellations and 0.831 for delays.
+Scenarios with binary outcomes such as ours tend to be prime candidates for modeling with a logistic regression, so we try this first. An advantage of logistic regressions is that the output of the classifier is not a binary decision but a likelihood which can set after the training is done. This makes them a prime candidate as a classifieer. We do a parameter sweep of C from 10^(-2) to 10^(3), separated logarithmically. The parameter turns out to make little difference, but C=1 gets us slightly better results. The mean test score is 0.781 for cancellations and 0.831 for delays.
 
 ### Random Forests
 
@@ -244,9 +244,10 @@ Next we need to assign a value to each. We assume for simplicity that a false
 positive will induce the same problem that we attempted to avoid: A false
 positive delay will cause a flight delay, and a false positive cancellation
 will cause the flight to be cancelled. We do not have cost figures available
-to know the relative costs of each; acquiring that data , but we can still build the model with
-the ability to tune this ratio. Let C = cost. We assume that for delays,
-C(FOR) = 100 times C(FPR) for cancellations and 25 times C(FOR) for delays.
+to know the relative costs of each; acquiring that data is beyond the scope
+of this project. However we can still build the model as a proof of concept
+with the ability to tune this ratio. Let C = cost. We assume that for both
+delays, and cancellations, C(FOR) = 25 times C(FPR).
 
 ![](./figures/FPR_FOR_cancels.png)
 
