@@ -226,7 +226,7 @@ is a catastrophic decision that can cost the in both the short and long run.
 
 ### Plots
 We are going to focus on two specific sets of misclassifications: the
-false observation rate (FOR), instances where the outcome is positive in spite
+false omission rate (FOR), instances where the outcome is positive in spite
 of a negative prediction, and the false positive rate (FPR), instances where we
 predicted what turned out to be a negative situation as positive.
 
@@ -252,3 +252,7 @@ delays, and cancellations, C(FOR) = 25 times C(FPR).
 ![](./figures/FPR_FOR_cancels.png)
 
 ![](./figures/FPR_FOR_delays.png)
+
+## Conclusion
+
+In our model, to minimize costs associated with cancellations, the threshold should be set to just above 0.8, and with delays it should be set to just under 0.8. This means that for both cancellations and delays, the airline should cancel/delay the flight if and only if the data suggest there is about an 80% chance of the need to do so. This will create quite a few false positives, but we must recall the serious danger of false omissions and how they are much more expensive in the long run than false positives. Until the airline can get a better model, likely from better weather data, it will have to accept some false positives as part of the cost of doing business.
