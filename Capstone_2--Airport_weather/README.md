@@ -131,7 +131,68 @@ As explained above, the spikes for Miami's arrivals and Atlanta's and Chicago's 
 
 ### Analysis
 
-The two biggest contributors to weather delays are rain and snow. In the weather dataset, snow and rain are listed as light, medium, or heavy, which we respectively assign values of 1, 2, and 3, with 0 as no rain/snow. The following four charts are of the percentage of flights between our four airports delayed or cancelled by rain or snow, categorized by the values of their rain/snow codes and whether the issue occurs at the departure or arrival airport.
+In the weather dataset, binary variables such as Cold are listed as 0 and 1; multi-value variables such as snow and rain, which are listed as light, medium, or heavy, are assigned values of 1, 2, and 3, respectively, with 0 as no rain/snow.
+
+After some data trimming, we get the following logistic regression analyses for cancellations and delays. "ArrRain" means the rain code at the arrival city, "DepSnowSqu" means the snow code at the departure city, and so forth. These are taken over the complete dataset and not meant to be final analyses.
+
+```
+Logistic regression analysis: Cancellations
+Optimization terminated successfully.
+         Current function value: 0.035928
+         Iterations 10
+                           Logit Regression Results                           
+==============================================================================
+Dep. Variable:       WeatherCancelled   No. Observations:               214986
+Model:                          Logit   Df Residuals:                   214975
+Method:                           MLE   Df Model:                           10
+Date:                Fri, 27 Nov 2020   Pseudo R-squ.:                  0.1554
+Time:                        14:22:55   Log-Likelihood:                -7724.0
+converged:                       True   LL-Null:                       -9145.1
+Covariance Type:            nonrobust   LLR p-value:                     0.000
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+const         -5.7211      0.040   -142.996      0.000      -5.800      -5.643
+ArrCold        3.3821      0.248     13.662      0.000       2.897       3.867
+ArrRain        0.3428      0.032     10.666      0.000       0.280       0.406
+ArrSleet       1.1403      0.234      4.878      0.000       0.682       1.598
+ArrSnow        2.2421      0.129     17.329      0.000       1.989       2.496
+ArrSnowSqu    -0.3626      0.048     -7.479      0.000      -0.458      -0.268
+ArrWind        2.4453      0.195     12.567      0.000       2.064       2.827
+DepCold        3.8611      0.231     16.730      0.000       3.409       4.313
+DepRain        0.4715      0.030     15.754      0.000       0.413       0.530
+DepSnow        2.4119      0.126     19.201      0.000       2.166       2.658
+DepSnowSqu    -0.3920      0.047     -8.401      0.000      -0.483      -0.301
+```
+
+```
+Logistic regression analysis with variable set trimmed: Delays
+Optimization terminated successfully.
+         Current function value: 0.058184
+         Iterations 9
+                           Logit Regression Results                           
+==============================================================================
+Dep. Variable:         WeatherDelayed   No. Observations:               214986
+Model:                          Logit   Df Residuals:                   214979
+Method:                           MLE   Df Model:                            6
+Date:                Fri, 27 Nov 2020   Pseudo R-squ.:                  0.1269
+Time:                        14:22:57   Log-Likelihood:                -12509.
+converged:                       True   LL-Null:                       -14327.
+Covariance Type:            nonrobust   LLR p-value:                     0.000
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+const         -5.1928      0.033   -159.079      0.000      -5.257      -5.129
+ArrCold        1.2085      0.528      2.289      0.022       0.174       2.243
+ArrRain        0.1873      0.026      7.218      0.000       0.136       0.238
+DepCold        2.4707      0.301      8.222      0.000       1.882       3.060
+DepHail        1.1674      0.316      3.699      0.000       0.549       1.786
+DepRain        1.1279      0.063     17.903      0.000       1.004       1.251
+DepRainSqu    -0.0147      0.021     -0.700      0.484      -0.056       0.026
+==============================================================================
+```
+
+The two biggest contributors to weather delays are rain and snow. The following four charts are of the percentage of flights between our four airports delayed or cancelled by rain or snow, categorized by the values of their rain/snow codes and whether the issue occurs at the departure or arrival airport.
 
 ![](./figures/SnowCancels.png) ![](./figures/SnowDelays.png)
 
@@ -143,11 +204,13 @@ Also notice the decrease in delays from snow code values of 2 to 3. This is prob
 
 The departure-arrival split is similar for the rain for both the delays and cancellations. This time, the rise in arrival delays is steady all the way through a rain code value of 3. Perhaps airports can still accept arriving airplanes during heavy rain as long as there is no severe weather, which would force a ground stop.
 
-We need to consider how many of our flights actually have each of these codes. Since the flights seem much more vulnerable to delays on the departure end, we will focus on arrival codes.
+We need to consider how many of our flights actually have each of these codes. Since the flights seem much more vulnerable to delays on the departure end, we will focus there.
 
 ### Key Takeaways
 
-Snow and rain have the strongest effects on flights. In particular, snow can cause delays on the departure end and cancellations on both ends of the flight, and rain can delay flights on the departure end. In all cases, these effects are more pronounced with more intense weather. We should focus on these effects as we attempt to train the data and need to start trimming explanatory variables to simplify the training process.
+Snow and rain have the strongest effects on flights. In particular, snow can cause delays on the departure end and cancellations on both ends of the flight, and rain can delay flights on the departure end. In all cases, these effects are more pronounced with more intense weather. With rain, airplanes can still depart and arrive, but extra measures such as increased spacing between planes on approach to a runway and preparing the planes for departure are necessary; this impedes an airport's ability to process flights and can create delays. In addition to these challenges, mild to moderate snow can require deicing procedures prior to departure, which explains all the departure delays for snow. Major snowstorms can shut down airports entirely.
+
+We should focus on these effects as we attempt to train the data and need to start trimming explanatory variables to simplify the training process.
 
 ## Training
 
